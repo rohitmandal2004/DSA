@@ -1,16 +1,27 @@
-public class Question_One{
+public class Question{
     public static void main(String[] args) {
         Linkedlist ll = new Linkedlist();
         ll.addLast(1);
         ll.addLast(2);
-        ll.addLast(3);
-        ll.addLast(4);
-        ll.addLast(5);
+        ll.addLast(2);
+        ll.addLast(2);
+        ll.addLast(1);
         ll.print();
+        System.out.println("is palindrome: " + ll.checkPalindrome());
 
-        System.out.println("Size of Linked List: " + ll.size);
-        System.out.println("the element found at index: " + ll.itrSearch(3));
-        System.out.println("the element found at index: " + ll.itrSearch(10));
+        //  System.out.println("Size of Linked List: " + ll.size);
+        // // System.out.println("the element found at index: " + ll.itrSearch(3));
+        // // System.out.println("the element found at index: " + ll.itrSearch(10));
+
+        // System.out.println("the element found at index: " + ll.recSearch(3));
+        // System.out.println("the element found at index: " + ll.recSearch(10));
+
+            // ll.reverse();
+            // ll.print();
+            // ll.deleteNthFromEnd(3);
+            // ll.print();
+
+
 }
 
 }
@@ -186,6 +197,111 @@ public int itrSearch(int key){ //o(n)
     return -1;
 }
 
+    public int helper(Node head, int key){ //O(n)
+
+        if(head == null){
+            return -1;
+        }
+        if(head.data == key){
+            return 0;
+        }
+        int idx = helper(head.next, key);
+        if(idx == -1){
+            return -1;
+        }
+        return idx + 1;
+    }
+
+    public int recSearch(int key){
+        return helper(head, key);
+    }
+
+    public void reverse(){
+        Node prev = null;
+        Node curr = tail = head; //update tail to head
+        Node next;
+
+        while(curr != null){
+            next = curr.next; //save next node
+            curr.next = prev; //reverse link
+            prev = curr; //move prev forward
+            curr = next; //move curr forward
+        }
+        head = prev; //update head to last node
+    }
+     
+
+     public void deleteNthFromEnd(int n){
+        //calculate size of linked list
+        int size = 0;
+        Node temp = head;
+        while(temp != null){
+            temp = temp.next;
+            size++;
+        }
+
+        if(n == size){
+            head = head.next; //delete first node
+            return;
+        }
+
+        // find (size - n)th node
+        int i = 1;
+        int idxToFind = size - n;
+        Node prev = head;
+         
+        while(i < idxToFind){
+            prev = prev.next;
+            i++;
+        }
+        prev.next = prev.next.next; //skip the nth node from end
+     }
+    
+    public Node findMid(Node head){
+        Node slow = head;
+        Node fast = head;
+
+        while(fast != null && fast.next != null){
+            slow = slow.next; //move 1 step
+            fast = fast.next.next; //move 2 steps
+        }
+        return slow; //slow is mid node
+    }
+
+     public boolean checkPalindrome(){
+
+        if(head == null || head.next == null){
+            return true;
+        }
+        // step 1: find mid
+        Node midNode = findMid(head);
+
+        // step 2: reverse second half
+        Node prev = null;
+        Node curr = midNode;
+        Node next;
+
+        while(curr != null){
+            next = curr.next; //save next node
+            curr.next = prev; //reverse link
+            prev = curr; //move prev forward
+            curr = next; //move curr forward
+        }
+        Node rightHead = prev; //head of reversed second half
+        Node leftHead = head; //head of first half
+
+        // step 3: compare first and second half
+        while(rightHead != null){
+            if(leftHead.data != rightHead.data){
+                return false; //not palindrome
+            }
+            leftHead = leftHead.next;
+            rightHead = rightHead.next;
+        }
+        return true; //palindrome
 
 
+     }
+
+     
 }
